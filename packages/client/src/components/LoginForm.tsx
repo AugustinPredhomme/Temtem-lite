@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
 import '../styles/login.scss';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { userSchema } from '../../../server/src/schemas/user'
+import { userSchema } from '../dependancies/schemas/user'
 
 const LoginForm = () => {
-    const { register, handleSubmit, formState: { errors }} = useForm({
+    const { register, handleSubmit} = useForm({
         resolver: yupResolver(userSchema)
     })
 
     const onSubmit = (data: any) => {
-        fetch('/api/login', {
+        fetch('http://localhost:3001/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -32,9 +30,11 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit((data) => onSubmit(data))}>
-      <input type="email" placeholder="Email" {...register('username', {required: true, pattern: /^\S+@\S+$/i})}/>
-      <input type="password" placeholder="Password" {...register('passwordHash', {required: true, minLength: 8, maxLength: 50})}/>
-      <button type="submit">Login</button>
+        <div>Login</div>
+        <input type="text" placeholder="Username" {...register('username', {required: true, maxLength: 50})}/>
+        <input type="email" placeholder="Email" {...register('email', {required: true, pattern: /^\S+@\S+$/i})}/>
+        <input type="password" placeholder="Password" {...register('password', {required: true, minLength: 8, maxLength: 50})}/>
+        <input type="submit"/>
     </form>
   );
 };

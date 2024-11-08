@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
 import '../styles/register.scss';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { userSchema } from '../../../server/src/schemas/user'
+import { userSchema } from '../dependancies/schemas/user'
+
+type FormValues = {
+  username: string
+  email: string
+  password: string
+}
 
 const RegisterForm = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const { register, handleSubmit} = useForm({
+      defaultValues: {
+        'username': '',
+        'email': '',
+        'password': ''
+      },
         resolver: yupResolver(userSchema)
       });
     
-      const onSubmit = (data: any) => {
-        fetch('/api/register', {
+      const onSubmit: SubmitHandler<FormValues> = (data) => {
+        console.log(JSON.stringify(data)); // A Retirer
+
+        fetch('http://localhost:3001/api/user/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -31,11 +42,12 @@ const RegisterForm = () => {
       };
 
   return (
-    <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>Register</div>
       <input type="text" placeholder="Username" {...register('username', {required: true, maxLength: 50})}/>
       <input type="email" placeholder="Email" {...register('email', {required: true, pattern: /^\S+@\S+$/i})}/>
-      <input type="password" placeholder="Password" {...register('passwordHash', {required: true, minLength: 8, maxLength: 50})}/>
-      <button type="submit">Register</button>
+      <input type="password" placeholder="Password" {...register('password', {required: true, minLength: 8, maxLength: 50})}/>
+      <input type="submit"/>
     </form>
   );
 };

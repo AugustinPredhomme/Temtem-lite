@@ -1,22 +1,23 @@
 import React from 'react';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
+import HomePage from './components/HomePage';
+import Resources from './components/Resources';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img className="logo" alt="temtem-lite-logo" />
-        <p>
-          Home Page
-        </p>
-        <a className="tab-link" href="/login">
-          Register
-        </a>
-        <a className="tab-link" href="/register">
-          Login
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
+        <Route path="/resources" element={<Resources />} />
+      </Routes>
+      <Resources />
+    </BrowserRouter>
   );
 }
 

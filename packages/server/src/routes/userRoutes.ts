@@ -1,8 +1,13 @@
-import express from 'express';
-import { registerUser } from '../controllers/userController';
+import { Router } from 'express';
 
-const router = express.Router();
+import { registerUser, loginUser } from '../controllers/userController';
 
-router.post('/api/register', registerUser);
+const router = Router();
+
+// POST // http://localhost:3001/api/user/register/[] (Créer un utilisateur)
+router.post('/register', registerUser);
+
+// POST // http://localhost:3001/api/user/login/[] (Connecter un utilisateur)
+router.post('/login', loginUser);
 
 export default router;
