@@ -5,7 +5,6 @@ import { Op } from 'sequelize';
 import * as bcrypt from 'bcrypt';
 import { APIResponse, generateAccessToken, generateRefreshToken } from '../utils';
 
-
 export const registerUser = async (req: Request, res: Response) => {
     try {
         const validatedUser = await userSchema.validate(req.body);
@@ -52,26 +51,64 @@ export const loginUser = async (req: Request, res: Response) => {
             sameSite: 'strict',
             maxAge: 1000*60*60*24*7 //7j
         });
-        
-        return APIResponse(res, user.id, 'Login successful', 200);
+                
+        return APIResponse(res, { id : user.id }, 'Login successful', 200);
     } catch (error) {
         console.error(error);
         return APIResponse(res, [], 'Login failed', 500);
     }
 };
 
-export const checkProfile = (req: Request, res: Response) => {
+export const checkProfile = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.userId;
+        const user = await User.findOne({ attributes: ['username', 'first_name', 'last_name', 'email', 'birthday', 'country', 'phone'], where: { id }});
 
-    APIResponse(res, 'user.id', 'User profile checked successfully');
+        if(!user) {
+            return APIResponse(res, [], 'User not found', 400);
+        }
+
+        return APIResponse(res, user, 'User profile checked successfully');
+    } catch (error) {
+        console.error(error);
+        return APIResponse(res, [], 'User profile check failed', 500);
+    }
 };
 
-export const modifyProfile = (req: Request, res: Response) => {
-
-    APIResponse(res, 'user.id', 'User profile modified successfully');
+export const modifyProfile = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.userId;
+        const getUser = await User.findOne({ attributes: ['username', 'email', 'password'], where: { id }});
+        //Add getUser (not modifiable) infos to req.body
+        req.body.username = getUser?.username;
+        req.body.email = getUser?.email;
+        req.body.password = getUser?.password;
+        const validatedUser = await userSchema.validate(req.body);
+        const { firstName, lastName, birthday, country, phone } = validatedUser;
+        if (getUser) {
+            await User.update( {
+                username: getUser.username,
+                first_name: firstName,
+                last_name: lastName,
+                email: getUser.email,
+                password: getUser.password,
+                birthday: birthday,
+                country: country,
+                phone: phone
+            }, {
+                where: {
+                    id: id
+                },
+            },);
+        }
+        return APIResponse(res, id, 'User profile modified successfully');
+    } catch (error) {
+        console.error("User couldn't be updated: ", error);
+    }
 };
 
 export const logout = (req: Request, res: Response) => {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
-    APIResponse(res, [], 'User disconnected successfully');
+    return APIResponse(res, [], 'User disconnected successfully');
 };

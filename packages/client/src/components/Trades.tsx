@@ -1,17 +1,15 @@
 import React from 'react';
 import '../styles/trades.scss';
-import useAuthStore from './isAuthenticated';
+import useUserIdStore from './userId';
 
 const Trades = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  if (isAuthenticated) {
+  const userId = useUserIdStore((state) => state.userId);
+  if (userId !== 0) {
     return (
       <div>Trades</div>
     );
   }
-  return (
-    <div>False Trade </div>
-  )
+  return null;
 }
 
 export default Trades;

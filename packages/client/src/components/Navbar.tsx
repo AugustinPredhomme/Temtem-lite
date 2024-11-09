@@ -1,13 +1,13 @@
 import '../styles/navbar.scss';
-import useAuthStore from './isAuthenticated';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOut } from '@fortawesome/free-solid-svg-icons'
 import temtem_icon from '../assets/images/temtem_icon.png'
 import { useMutation } from '@tanstack/react-query';
+import useUserIdStore from './userId';
 
 const Navbar = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
+  const userId = useUserIdStore((state) => state.userId);
+  const setUserId = useUserIdStore((state) => state.setUserId);
 
 
   const { mutate: logout } = useMutation({
@@ -22,7 +22,7 @@ const Navbar = () => {
         return;
       }
 
-      setIsAuthenticated(false);
+      setUserId(0);
       console.log("User Logged Out");
     }
   })
@@ -31,7 +31,7 @@ const Navbar = () => {
     logout();
   }
 
-  if (!isAuthenticated) {
+  if (userId === 0) {
     //Logged out render
     return (
       <nav className="navbar">

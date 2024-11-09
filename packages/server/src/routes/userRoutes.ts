@@ -12,10 +12,10 @@ router.post('/register', isNotAuthenticated, registerUser);
 router.post('/login', isNotAuthenticated, loginUser);
 
 // GET // http://localhost:3001/api/user/profile/[id] (Check user infos)
-router.get("/profile/:id", authMiddleware, checkProfile);
+router.get("/profile/:userId", authMiddleware, checkProfile);
 
 // POST // http://localhost:3001/api/user/profile/[id] (Modify user infos)
-router.post("/profile/:id", authMiddleware, modifyProfile);
+router.post("/profile/:userId", authMiddleware, modifyProfile);
 
 // GET // http://localhost:3001/api/user/logout/[] (Disconnect)
 router.post('/logout', authMiddleware, logout);

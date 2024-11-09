@@ -39,9 +39,9 @@ export const refreshTokenMiddleware = async (req: Request, res: Response, next: 
         const newRefreshToken = generateRefreshToken(userId);
 
         const id = parseInt(userId);
-        await User.update(
-            { refresh_token: newRefreshToken }, 
-            { where: { id: id}}
+        await User.update( 
+            { refresh_token: newRefreshToken },
+            { where: { id: id },},
         );
         res.cookie('accessToken', newAccessToken, {
             httpOnly: true,

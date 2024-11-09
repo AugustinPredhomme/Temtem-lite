@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
 import { userSchema } from '../dependancies/schemas/user';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from './isAuthenticated';
+import useUserIdStore from './userId';
 
 type FormValues = {
     username: string;
@@ -13,8 +13,7 @@ type FormValues = {
 };
 
 const LoginForm = () => {
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-    const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
+    const { userId, setUserId } = useUserIdStore();
     const navigate = useNavigate();
     const { register, handleSubmit} = useForm({
         resolver: yupResolver(userSchema)
@@ -22,7 +21,7 @@ const LoginForm = () => {
 
     const mutation = useMutation({
         mutationFn: async (data: FormValues) => {
-            const response = await fetch('http://localhost:3001/api/user/login', {
+            const res = await fetch('http://localhost:3001/api/user/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,13 +30,17 @@ const LoginForm = () => {
                 body: JSON.stringify(data),
             });
 
-            if (!response.ok) {
-                const errorData = await response.text();
+            if (!res.ok) {
+                const errorData = await res.text();
                 console.error('Login failed:', errorData);
                 return;
             }
-            console.log('Login successful!', data);
-            setIsAuthenticated(true);
+            return await res.json()
+        },
+        onSuccess: (loginData, variables, context) => {
+            console.log(loginData.data.id);
+            setUserId(loginData.data.id);
+            console.log('Login successful!', variables);
             console.log("Redirect to Home Page");
             navigate("/");
         },
@@ -48,8 +51,9 @@ const LoginForm = () => {
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
         await mutation.mutateAsync(data);
+        console.log(userId);
     };
-    if (!isAuthenticated) {
+    if (userId === 0) {
         return (
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div>Login</div>

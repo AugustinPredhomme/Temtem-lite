@@ -1,10 +1,10 @@
 import React from 'react';
 import '../styles/fights.scss';
-import useAuthStore from './isAuthenticated';
+import useUserIdStore from './userId';
 
 const Fights = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  if (isAuthenticated) {  
+  const userId = useUserIdStore((state) => state.userId);
+  if (userId !== 0) {  
     return (
       <div>Fights</div>
     );

@@ -1,10 +1,10 @@
 import React from 'react';
 import '../styles/hero.scss';
-import useAuthStore from './isAuthenticated';
+import useUserIdStore from './userId';
 
 const Hero = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  if (!isAuthenticated) {
+  const userId = useUserIdStore((state) => state.userId);
+  if (userId === 0) {
     return (
       <section className="hero">
         <h1>Temtem-Lite</h1>

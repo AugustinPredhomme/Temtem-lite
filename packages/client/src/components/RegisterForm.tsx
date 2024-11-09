@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { userSchema } from '../dependancies/schemas/user';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from './isAuthenticated';
+import useUserIdStore from './userId';
 
 type FormValues = {
   username: string;
@@ -13,7 +13,7 @@ type FormValues = {
 };
 
 const RegisterForm = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const userId = useUserIdStore((state) => state.userId);
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -26,7 +26,7 @@ const RegisterForm = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: FormValues) => {
-      const response = await fetch('http://localhost:3001/api/user/register', {
+      const res = await fetch('http://localhost:3001/api/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,8 +34,8 @@ const RegisterForm = () => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        const data = await response.json();
+      if (!res.ok) {
+        const data = await res.json();
         console.error('Registration Failed:', data.message);
         return;
       }
@@ -51,7 +51,7 @@ const RegisterForm = () => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     await mutation.mutateAsync(data);
   };
-  if (!isAuthenticated) {
+  if (userId === 0) {
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>Register</div>
@@ -62,9 +62,7 @@ const RegisterForm = () => {
       </form>
     );
   }
-  return (
-    <div></div>
-  );
+  return null;
 };
 
 export default RegisterForm;
