@@ -3,7 +3,7 @@ import { User } from '../models/User';
 import { userSchema } from '../schemas/user';
 import { Op } from 'sequelize';
 import * as bcrypt from 'bcrypt';
-import { APIResponse } from '../utils/response';
+import { APIResponse, generateAccessToken, generateRefreshToken } from '../utils';
 
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -12,13 +12,13 @@ export const registerUser = async (req: Request, res: Response) => {
         const { username, email, password } = validatedUser;
         const existingUser = await User.findOne({ where: { [Op.or]: [{ username }, { email }]}});
         if (existingUser) {
-            APIResponse(res, [], 'Username or Email already exists', 400);
+            return APIResponse(res, [], 'Username or Email already exists', 400);
         }
         const newUser = await User.create({ username, email, password });
-        APIResponse(res, newUser, 'User created successfully!', 201);
+        return APIResponse(res, newUser, 'User created successfully!', 201);
     } catch (error: any) {
         console.log(error);
-        APIResponse(res, [], 'Error creating user', 500);
+        return APIResponse(res, [], 'Error creating user', 500);
     }
 };
 
@@ -38,11 +38,25 @@ export const loginUser = async (req: Request, res: Response) => {
             return APIResponse(res, [], 'Incorrect password', 401);
         }
 
-        //Generate JWT token
-        //APIResponse(res, { token }, 'Login successful', 200);
-        APIResponse(res, [], 'Login successful', 200);
+        const accessToken = generateAccessToken(user.id);
+        const refreshToken = generateRefreshToken(user.id);
+        res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+        
+        return APIResponse(res, user.id, 'Login successful', 200);
     } catch (error) {
         console.error(error);
-        APIResponse(res, [], 'Login failed', 500);
+        return APIResponse(res, [], 'Login failed', 500);
     }
+};
+
+export const profile = (req: Request, res: Response) => {
+
+    APIResponse(res, 'user.id', 'User profile checked successfully');
+};
+
+export const logout = (req: Request, res: Response) => {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    APIResponse(res, [], 'User disconnected successfully');
 };

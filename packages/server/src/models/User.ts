@@ -3,6 +3,7 @@ import { sequelize } from '../config/database';
 import bcrypt from 'bcrypt';
 
 export interface User {
+    id: number,
     username: string;
     firstName?: string;
     lastName?: string;
@@ -13,6 +14,7 @@ export interface User {
     country?: string;
     phone?: string;
     sign_up_date?: Date;
+    refresh_token?: string;
 }
 
 export class User extends Model {
@@ -25,6 +27,11 @@ export class User extends Model {
 
 User.init(
     {
+        id: {
+            type:DataTypes.UUID,
+            unique: true,
+            primaryKey: true
+        },
         username: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -67,6 +74,9 @@ User.init(
         sign_up_date: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
+        },
+        refresh_token: {
+            type: DataTypes.STRING
         }
     }, {
         sequelize,

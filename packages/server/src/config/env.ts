@@ -8,8 +8,8 @@ type NODE_ENV = 'production' | 'development' | 'test';
 export const env: EnvConfig = {
     PORT: parseInt(process.env.PORT || "3001"),
 
-    JWT_SECRET: process.env.JWT_SECRET || "secret",
-    JWT_EXPIRATION: process.env.JWT_EXPIRATION || '15mn',
+    JWT_SECRET: process.env.JWT_SECRET || 'secret',
+    JWT_EXPIRATION: process.env.JWT_EXPIRATION || '1h',
 
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || 'refresh_secret',
     REFRESH_TOKEN_EXPIRATION: process.env.REFRESH_TOKEN_EXPIRATION || '7d',

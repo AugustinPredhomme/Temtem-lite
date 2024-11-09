@@ -2,16 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { env } from './config/env';
-import router from './routes/userRoutes';
+import router from './routes';
 import { sequelize } from './config/database';
+import { refreshTokenMiddleware } from './middlewares';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const { PORT, FRONTEND_URL } = env;
-
-// Middlewares
-app.use(cors());
-app.use(bodyParser.json());
-
 
 (async () => {
   try {
@@ -22,29 +19,19 @@ app.use(bodyParser.json());
     process.exit(1);
   }
 })();
-/*
-export const dbConnection = mysql.createConnection({
-  host: DB_HOST,
-  user: DB_USER,
-  password: DB_PASSWORD,
-  database: DB_NAME
-})
 
-dbConnection.connect(function(err: any) {
-  if (err) {
-    throw err;
-  }
-  console.log("Connected to DB");
-})
-*/
-
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(cors({
   origin: FRONTEND_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true
 }))
+
+//Middlewares
+app.use(refreshTokenMiddleware);
 
 app.use('/api', router);
 

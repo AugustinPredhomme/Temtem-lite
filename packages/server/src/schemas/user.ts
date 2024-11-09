@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 export const userSchema = yup.object().shape({
+    id: yup.number(),
     username: yup.string().required("Username required").min(3).max(50),
     firstName: yup.string(),
     lastName: yup.string(),
@@ -10,4 +11,5 @@ export const userSchema = yup.object().shape({
     birthday: yup.date(),
     country: yup.string(),
     phone: yup.string().matches(/^\d{10,15}$/), // Basic phone number validation
+    refresh_token: yup.string()
 });
