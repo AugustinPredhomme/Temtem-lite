@@ -33,6 +33,7 @@ app.use(cors({
 //Middlewares
 app.use(refreshTokenMiddleware);
 
+// http://localhost:3001/api
 app.use('/api', router);
 
 app.listen(PORT, () => {

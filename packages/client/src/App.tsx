@@ -40,27 +40,28 @@ function App() {
         </BrowserRouter>
       </QueryClientProvider>
     );
+  } else {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            
+            {/* User Related Routes */}
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/register" element={<RegisterForm />} />
+
+            {/* Features Related Routes */}
+
+            {/* Misc Related Routes */}
+            <Route path="/resources" element={<Resources />} />
+          </Routes>
+          <Resources />
+        </BrowserRouter>
+      </QueryClientProvider>
+    );
   }
-  return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          
-          {/* User Related Routes */}
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/register" element={<RegisterForm />} />
-
-          {/* Features Related Routes */}
-
-          {/* Misc Related Routes */}
-          <Route path="/resources" element={<Resources />} />
-        </Routes>
-        <Resources />
-      </BrowserRouter>
-    </QueryClientProvider>
-  );
 }
 
 export default App;

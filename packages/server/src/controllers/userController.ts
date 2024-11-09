@@ -40,8 +40,18 @@ export const loginUser = async (req: Request, res: Response) => {
 
         const accessToken = generateAccessToken(user.id);
         const refreshToken = generateRefreshToken(user.id);
-        res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+        res.cookie('accessToken', accessToken, { 
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: 1000*60*15 //15min
+        });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: 1000*60*60*24*7 //7j
+        });
         
         return APIResponse(res, user.id, 'Login successful', 200);
     } catch (error) {
@@ -50,9 +60,14 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 };
 
-export const profile = (req: Request, res: Response) => {
+export const checkProfile = (req: Request, res: Response) => {
 
     APIResponse(res, 'user.id', 'User profile checked successfully');
+};
+
+export const modifyProfile = (req: Request, res: Response) => {
+
+    APIResponse(res, 'user.id', 'User profile modified successfully');
 };
 
 export const logout = (req: Request, res: Response) => {

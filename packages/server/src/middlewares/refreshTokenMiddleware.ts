@@ -46,12 +46,14 @@ export const refreshTokenMiddleware = async (req: Request, res: Response, next: 
         res.cookie('accessToken', newAccessToken, {
             httpOnly: true,
             secure: false,
-            sameSite: 'strict'
+            sameSite: 'strict',
+            maxAge: 1000*60*15 //15mn
         });
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
             secure: false,
-            sameSite: 'strict'
+            sameSite: 'strict',
+            maxAge: 1000*60*60*24*7 //7j
         });
 
         next();

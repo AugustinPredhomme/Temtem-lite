@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { registerUser, loginUser, profile, logout } from '../controllers/userController';
+import { registerUser, loginUser, checkProfile, modifyProfile, logout } from '../controllers/userController';
 import { authMiddleware, isNotAuthenticated } from '../middlewares';
 
 const router = Router();
@@ -12,9 +12,12 @@ router.post('/register', isNotAuthenticated, registerUser);
 router.post('/login', isNotAuthenticated, loginUser);
 
 // GET // http://localhost:3001/api/user/profile/[id] (Check user infos)
-router.get("/profile/:id", authMiddleware, profile);
+router.get("/profile/:id", authMiddleware, checkProfile);
+
+// POST // http://localhost:3001/api/user/profile/[id] (Modify user infos)
+router.post("/profile/:id", authMiddleware, modifyProfile);
 
 // GET // http://localhost:3001/api/user/logout/[] (Disconnect)
-router.get('/logout', authMiddleware, logout);
+router.post('/logout', authMiddleware, logout);
 
 export default router;
