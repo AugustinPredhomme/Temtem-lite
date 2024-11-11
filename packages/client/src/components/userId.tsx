@@ -6,7 +6,7 @@ interface UserIdStore {
 }
 
 const useUserIdStore = create<UserIdStore>((set) => ({
-  userId: 0,
+  userId: 20,
   setUserId: (value) => set({ userId: value }),
 }));
 

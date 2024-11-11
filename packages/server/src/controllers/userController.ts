@@ -59,16 +59,30 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 };
 
+export const getAllUsers = async (req: Request, res: Response) => {
+    try {
+        const allUsers = await User.findAll();
+        
+        if (!allUsers) {
+            return APIResponse(res, [], 'No user found', 400);
+        }
+        return APIResponse(res, allUsers, 'All users have been returned', 200);
+    } catch (error: any) {
+        console.log(error);
+        return APIResponse(res, [], 'Get all users failed', 500);
+    }
+}
+
 export const checkProfile = async (req: Request, res: Response) => {
     try {
-        const id = req.params.userId;
+        const id = parseInt(req.params.userId);
         const user = await User.findOne({ attributes: ['username', 'first_name', 'last_name', 'email', 'birthday', 'country', 'phone'], where: { id }});
 
         if(!user) {
             return APIResponse(res, [], 'User not found', 400);
         }
 
-        return APIResponse(res, user, 'User profile checked successfully');
+        return APIResponse(res, user, 'User profile checked successfully', 200);
     } catch (error) {
         console.error(error);
         return APIResponse(res, [], 'User profile check failed', 500);
@@ -78,7 +92,7 @@ export const checkProfile = async (req: Request, res: Response) => {
 export const modifyProfile = async (req: Request, res: Response) => {
     try {
         const id = req.params.userId;
-        const getUser = await User.findOne({ attributes: ['username', 'email', 'password'], where: { id }});
+        const getUser = await User.findOne({ attributes: ['username', 'email', 'password'], where: { id: id }});
         //Add getUser (not modifiable) infos to req.body
         req.body.username = getUser?.username;
         req.body.email = getUser?.email;
@@ -100,8 +114,8 @@ export const modifyProfile = async (req: Request, res: Response) => {
                     id: id
                 },
             },);
+            return APIResponse(res, id, 'User profile modified successfully', 200);
         }
-        return APIResponse(res, id, 'User profile modified successfully');
     } catch (error) {
         console.error("User couldn't be updated: ", error);
     }
@@ -110,5 +124,5 @@ export const modifyProfile = async (req: Request, res: Response) => {
 export const logout = (req: Request, res: Response) => {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
-    return APIResponse(res, [], 'User disconnected successfully');
+    return APIResponse(res, [], 'User disconnected successfully', 200);
 };

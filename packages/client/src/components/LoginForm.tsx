@@ -31,27 +31,27 @@ const LoginForm = () => {
             });
 
             if (!res.ok) {
-                const errorData = await res.text();
-                console.error('Login failed:', errorData);
+                const errorData = await res.json();
+                console.error('Login failed:', errorData.message);
                 return;
             }
-            return await res.json()
-        },
-        onSuccess: (loginData, variables, context) => {
-            console.log(loginData.data.id);
+            const loginData = await res.json();
+            console.log(loginData.data.id);    
             setUserId(loginData.data.id);
-            console.log('Login successful!', variables);
+            console.log(userId);        
+            console.log('Login successful!', loginData);
             console.log("Redirect to Home Page");
             navigate("/");
+
+            return loginData;
         },
-        onError: (error) => {
-            console.error('Login failed:', error);
-        },
+        onError() {
+            console.error('Login failed:');
+        }
     });
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
         await mutation.mutateAsync(data);
-        console.log(userId);
     };
     if (userId === 0) {
         return (
@@ -64,9 +64,7 @@ const LoginForm = () => {
             </form>
         );
     }
-    return (
-        <div></div>
-    );
+    return null;
 };
 
 export default LoginForm;
