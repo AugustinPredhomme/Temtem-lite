@@ -7,12 +7,12 @@ import { Op } from 'sequelize';
 export const createTemtem = async (req: Request, res: Response) => {
     try {
         const validatedTemtem = await temtemSchema.validate(req.body);
-        const { name, health, type_one, type_two, skill_one, skill_two, skill_three, skill_four } = validatedTemtem;
+        const { name, health, type_one} = validatedTemtem;
         const existingTemtem = await Temtem.findOne({ where: { name }});
         if (existingTemtem) {
             return APIResponse(res, [], 'Temtem already exists', 400);
         }
-        const newTemtem = await Temtem.create({ name, health, type_one, type_two, skill_one, skill_two, skill_three, skill_four });
+        const newTemtem = await Temtem.create({ name, health, type_one });
         return APIResponse(res, newTemtem, 'Temtem created successfully', 201);
     } catch (error: any) {
         console.log(error);
@@ -36,9 +36,8 @@ export const getAllTemtems = async (req: Request, res: Response) => {
 
 export const checkTemtem = async (req: Request, res: Response) => {
     try {
-        const id = req.params.temtemId;
-        const name = req.params.temtemName;
-        const temtem = await Temtem.findOne({ where: { [Op.or]: [{ id }, { name }] }});
+        const { temtemId } = req.params;
+        const temtem = await Temtem.findOne({ where: { id: temtemId }});
 
         if(!temtem) {
             return APIResponse(res, [], 'Temtem not found', 400);
@@ -53,27 +52,18 @@ export const checkTemtem = async (req: Request, res: Response) => {
 
 export const modifyTemtem = async (req: Request, res: Response) => {
     try {
-        const paramId = req.params.temtemId;
-        const getTemtem = await Temtem.findOne({ where: { id: paramId }});
-        req.body.name = getTemtem?.name;
-        const validatedTemtem = await temtemSchema.validate(req.body);
-        const { name, health, type_one, type_two, skill_one, skill_two, skill_three, skill_four } = validatedTemtem;
-        if (getTemtem) {
-            const temtem = await Temtem.update( {
-                name: name,
-                health: health,
-                type_one: type_one,
-                type_two: type_two,
-                skill_one: skill_one,
-                skill_two: skill_two,
-                skill_three: skill_three,
-                skill_four: skill_four
-            }, {
-                where: { id: paramId },
-            },);
-            return APIResponse(res, temtem, 'Temtem modified successfully', 200);
+        const { temtemId } = req.params;
+        const validatedSkill = await temtemSchema.validate(req.body);
+        const { name, health, type_one } = validatedSkill;
+        const temtem = await Temtem.findByPk(temtemId);
+        if (!temtem) {
+            return APIResponse(res, temtemId, 'Temtem not found', 400);
         }
-        return APIResponse(res, [], 'Temtem not found', 400);
+        temtem.name = name;
+        temtem.health = health;
+        temtem.type_one = type_one;
+        await temtem.save()
+        return APIResponse(res, temtem, 'Temtem modified successfully', 200);
     } catch (error) {
         console.error("Temtem couldn't be updated: ", error);
     }

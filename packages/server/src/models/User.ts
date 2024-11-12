@@ -29,7 +29,7 @@ User.init(
     {
         id: {
             type:DataTypes.UUID,
-            unique: true,
+            autoIncrement: true,
             primaryKey: true
         },
         username: {

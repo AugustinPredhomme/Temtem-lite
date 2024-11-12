@@ -2,16 +2,33 @@ import { Request, Response } from 'express';
 import { APIResponse } from "../utils";
 import { fightSchema } from '../schemas/fight';
 import { Fight } from '../models/Fight';
+import { User } from '../models/User';
 
 export const createFight = async (req: Request, res: Response) => {
     try {
         const validatedFight = await fightSchema.validate(req.body);
         const { user_one, user_two, winner } = validatedFight;
+
+        const validUserOne = await User.findByPk(user_one);
+        if (!validUserOne) {
+            return APIResponse(res, user_one, `User ${user_one} not found`, 400);
+        }
+
+        const validUserTwo = await User.findByPk(user_two);
+        if (!validUserTwo) {
+            return APIResponse(res, user_two, `User ${user_two} not found`, 400);
+        }
+
+        if (winner !== user_one && winner !== user_two) {
+            return APIResponse(res, null, 'Winner must be one of the participating users', 400);
+        }
+
         const newFight = await Fight.create({ user_one, user_two, winner });
+        
         return APIResponse(res, newFight, 'Fight created successfully', 201);
     } catch (error: any) {
-        console.log(error);
-        return APIResponse(res, [], 'Error creating fight', 500);
+        console.error(error);
+        return APIResponse(res, null, 'Error creating fight', 500);
     }
 };
 
@@ -27,19 +44,3 @@ export const getAllFights = async (req: Request, res: Response) => {
         return APIResponse(res, [], 'Get all skills failed', 500);
     }
 }
-
-export const checkFight = async (req: Request, res: Response) => {
-    try {
-        const id = req.params.fightId;
-        const fight = await Fight.findOne({ where: { id: id }});
-
-        if(!fight) {
-            return APIResponse(res, [], 'Fight not found', 400);
-        }
-
-        return APIResponse(res, fight, 'Fight checked successfully', 200);
-    } catch (error) {
-        console.error(error);
-        return APIResponse(res, [], 'Fight check failed', 500);
-    }
-};

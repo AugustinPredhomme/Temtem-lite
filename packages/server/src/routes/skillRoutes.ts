@@ -12,9 +12,9 @@ router.post('/', authMiddleware, isAdminMiddleware, createSkill);
 router.get('/', authMiddleware, getAllSkills);
 
 // GET // http://localhost:3001/api/trade/[id] (Check a specific skill)
-router.get('/:id', authMiddleware, checkSkill);
+router.get('/:skillId', authMiddleware, checkSkill);
 
 // POST // http://localhost:3001/api/skill/[id] (Modify a skill)
-router.post('/:id', authMiddleware, isAdminMiddleware, modifySkill);
+router.post('/:skillId', authMiddleware, isAdminMiddleware, modifySkill);
 
 export default router;

@@ -6,11 +6,6 @@ export interface Temtem {
     name: string;
     health: number,
     type_one: string,
-    type_two?: string,
-    skill_one: number,
-    skill_two: number,
-    skill_three: number,
-    skill_four: number,
 }
 
 export class Temtem extends Model {
@@ -20,7 +15,7 @@ Temtem.init(
     {
         id: {
             type:DataTypes.UUID,
-            unique: true,
+            autoIncrement: true,
             primaryKey: true
         },
         name: {
@@ -34,25 +29,6 @@ Temtem.init(
         },
         type_one: {
             type: DataTypes.STRING,
-            allowNull: false
-        },
-        type_two: {
-            type: DataTypes.STRING,
-        },
-        skill_one: {
-            type: DataTypes.UUID,
-            allowNull: false
-        },
-        skill_two: {
-            type: DataTypes.UUID,
-            allowNull: false
-        },
-        skill_three: {
-            type: DataTypes.UUID,
-            allowNull: false
-        },
-        skill_four: {
-            type: DataTypes.UUID,
             allowNull: false
         }
     }, {

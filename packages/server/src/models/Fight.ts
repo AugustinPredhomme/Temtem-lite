@@ -15,18 +15,32 @@ Fight.init(
     {
         id: {
             type:DataTypes.UUID,
-            unique: true,
+            autoIncrement: true,
             primaryKey: true
         },
         user_one: {
-            type: DataTypes.UUID,
+            type: DataTypes.NUMBER,
             allowNull: false,
+            references: {
+                model: 'User',
+                key: 'id',
+            }
         },
         user_two: {
-            type: DataTypes.UUID
+            type: DataTypes.NUMBER,
+            allowNull: false,
+            references: {
+                model: 'User',
+                key: 'id',
+            }
         },
         winner: {
-            type: DataTypes.UUID
+            type: DataTypes.NUMBER,
+            allowNull: false,
+            references: {
+                model: 'User',
+                key: 'id',
+            }
         }
     }, {
         sequelize,

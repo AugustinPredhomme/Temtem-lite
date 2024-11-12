@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { APIResponse } from "../utils";
 import { skillSchema } from '../schemas/skill';
 import { Skill } from '../models/Skill';
-import { Op } from 'sequelize';
 
 export const createSkill = async (req: Request, res: Response) => {
     try {
@@ -36,9 +35,8 @@ export const getAllSkills = async (req: Request, res: Response) => {
 
 export const checkSkill = async (req: Request, res: Response) => {
     try {
-        const id = req.params.skillId;
-        const name = req.params.skillName;
-        const skill = await Skill.findOne({ where: { [Op.or]: [{ id }, { name }] }});
+        const { skillId } = req.params;
+        const skill = await Skill.findOne({ where: { id: skillId }});
 
         if(!skill) {
             return APIResponse(res, [], 'Skill not found', 400);
@@ -53,22 +51,18 @@ export const checkSkill = async (req: Request, res: Response) => {
 
 export const modifySkill = async (req: Request, res: Response) => {
     try {
-        const paramId = req.params.skillId;
-        const getSkill = await Skill.findOne({ where: { id: paramId }});
-        req.body.name = getSkill?.name;
+        const { skillId } = req.params;
         const validatedSkill = await skillSchema.validate(req.body);
         const { name, damage, cooldown } = validatedSkill;
-        if (getSkill) {
-            const skill = await Skill.update( {
-                name: name,
-                damage: damage,
-                cooldown: cooldown
-            }, {
-                where: { id: paramId },
-            },);
-            return APIResponse(res, skill, 'Skill modified successfully', 200);
+        const skill = await Skill.findByPk(skillId);
+        if (!skill) {
+            return APIResponse(res, skillId, 'Skill not found', 400);
         }
-        return APIResponse(res, [], 'Skill not found', 400);
+        skill.name = name;
+        skill.damage = damage;
+        skill.cooldown = cooldown;
+        await skill.save()
+        return APIResponse(res, skill, 'Skill modified successfully', 200);
     } catch (error) {
         console.error("Skill couldn't be updated: ", error);
     }

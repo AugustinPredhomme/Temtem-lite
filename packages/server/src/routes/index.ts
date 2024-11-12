@@ -4,6 +4,7 @@ import { env } from '../config/env';
 import userRouter from './userRoutes';
 import skillRouter from './skillRoutes';
 import temtemRouter from './temtemRoutes';
+import temtemSkillRouter from './temtemSkillsRoutes';
 import inventoryRouter from './inventoryRoutes';
 import tradeRouter from './tradeRoutes';
 import fightRouter from './fightRoutes';
@@ -21,6 +22,9 @@ router.use('/skill', skillRouter);
 
 // http://localhost:3001/api/temtem
 router.use('/temtem', temtemRouter);
+
+// http://localhost:3001/api/temtem
+router.use('/temtemSkill', temtemSkillRouter);
 
 // http://localhost:3001/api/inventory
 router.use('/inventory', inventoryRouter);

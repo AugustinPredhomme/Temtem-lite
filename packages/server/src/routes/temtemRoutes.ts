@@ -12,9 +12,9 @@ router.post('/', authMiddleware, isAdminMiddleware, createTemtem);
 router.get('/', authMiddleware, getAllTemtems);
 
 // GET // http://localhost:3001/api/temtem/[id] (Check a specific temtem)
-router.get('/:id', authMiddleware, checkTemtem);
+router.get('/:temtemId', authMiddleware, checkTemtem);
 
 // POST // http://localhost:3001/api/temtem/[id] (Modify a specific temtem)
-router.post('/:id', authMiddleware, modifyTemtem);
+router.post('/:temtemId', authMiddleware, isAdminMiddleware, modifyTemtem);
 
 export default router;

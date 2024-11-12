@@ -2,18 +2,35 @@ import { Request, Response } from 'express';
 import { APIResponse } from "../utils";
 import { inventorySchema } from '../schemas/inventory';
 import { Inventory } from '../models/Inventory';
+import { InventoryTemtem } from '../models/InventoryTemtem';
+import { Temtem } from '../models/Temtem';
 
-export const createInventory = async (req: Request, res: Response) => {
+export const addTemtemToInventory = async (req: Request, res: Response) => {
     try {
-        req.body.user_id = req.params.userId;
-        const validatedInventory = await inventorySchema.validate(req.body);
-        const { user_id, temtems } = validatedInventory;
-        const existingInventory = await Inventory.findOne({ where: { user_id }});
-        if (existingInventory) {
-            return APIResponse(res, [], 'Inventory already exists', 400);
+        const { userId } = req.query;
+        const { temtemIds } = req.body;
+
+        if (userId===undefined) {
+            return APIResponse(res, [], 'UserID must be defined', 400);
         }
-        const newInventory = await Inventory.create({ user_id, temtems });
-        return APIResponse(res, newInventory, 'Inventory created successfully', 201);
+        const user_idQuery = parseInt(userId.toString());
+        const [newInventory, created] = await Inventory.findOrCreate({ where: { user_id: user_idQuery }, defaults: { user_id: user_idQuery }});
+        for (const temtemId of temtemIds) {
+            const temtem = await Temtem.findByPk(temtemId);
+            if (!temtem) {
+                return APIResponse(res, [], 'Temtem not found', 400);
+            }
+
+            const [inventoryTemtem, temtemCreated] = await InventoryTemtem.findOrCreate({
+                where : { inventory_id: newInventory.id, temtem_id: temtemId },
+                defaults: { inventory_id: newInventory.id, temtem_id: temtemId }
+            });
+
+            if (!temtemCreated) {
+                console.log(`Temtem ${temtemId} already exists in inventory ${newInventory.id}`);
+            }
+        }
+        return APIResponse(res, newInventory, 'Inventory created successfully', created ? 201 : 200);
     } catch (error: any) {
         console.log(error);
         return APIResponse(res, [], 'Error creating inventory', 500);
@@ -22,13 +39,13 @@ export const createInventory = async (req: Request, res: Response) => {
 
 export const checkInventory = async (req: Request, res: Response) => {
     try {
-        const user_id = req.params.userId;
-        const inventory = await Inventory.findOne({ where: { user_id }});
+        const { userId } = req.params;
+
+        const inventory = await Inventory.findOne({ where: { user_id: userId }, include: [{ model: Temtem, through: { attributes: [] }}]});
 
         if(!inventory) {
             return APIResponse(res, [], 'Inventory not found', 400);
         }
-
         return APIResponse(res, inventory, 'Inventory checked successfully', 200);
     } catch (error) {
         console.error(error);
@@ -36,24 +53,20 @@ export const checkInventory = async (req: Request, res: Response) => {
     }
 };
 
-export const modifyInventory = async (req: Request, res: Response) => {
+export const deleteTemtemFromInventory = async (req: Request, res: Response) => {
     try {
-        const user_id = req.params.userId;
-        const getInventory = await Inventory.findOne({ where: { id: user_id }});
-        if (getInventory) {
-        const validatedInventory = await inventorySchema.validate(req.body);
-        const { user_id, temtems } = validatedInventory;
-            const inventory = await Inventory.update( {
-                user_id: user_id,
-                temtems: temtems
-            }, {
-                where: { id: user_id },
-            },);
-            return APIResponse(res, inventory, 'Inventory modified successfully', 200);
+        const  { userId, temtemId } = req.params;
+        const inventory = await Inventory.findOne({ where: { user_id: userId }});
+
+        if (!inventory) {
+            return APIResponse(res, [], 'Inventory not found');
         }
-        return APIResponse(res, [], 'Inventory not found', 400);
+
+        await InventoryTemtem.destroy({ where: { inventory_id: inventory.id, temtem_id: temtemId }});
+
+        return APIResponse(res, temtemId, 'Temtem removed from inventory', 200);
     } catch (error) {
-        console.error("Inventory couldn't be updated: ", error);
-        return APIResponse(res, [], 'Error modifying inventory', 500);
+        console.error("Inventory couldn't be deleted: ", error);
+        return APIResponse(res, [], 'Internal server error', 500);
     }
 };
