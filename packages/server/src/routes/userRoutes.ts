@@ -12,7 +12,7 @@ router.post('/register', isNotAuthenticated, registerUser);
 router.post('/login', isNotAuthenticated, loginUser);
 
 // GET // http://localhost:3001/api/user/[] (Get all users)
-router.get('/', authMiddleware, isAdminMiddleware, getAllUsers);
+router.get('/', authMiddleware, getAllUsers);
 
 // GET // http://localhost:3001/api/user/profile/[id] (Check user infos)
 router.get("/profile/:userId", authMiddleware, checkProfile);
