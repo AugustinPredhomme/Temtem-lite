@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navbar from './components/Navbar';
@@ -9,6 +8,7 @@ import Resources from './components/Resources';
 import ProfileForm from './components/ProfileForm';
 import Trades from './components/Trades';
 import Fights from './components/Fights';
+import Inventory from './components/Inventory';
 import { UserProvider } from './context/UserContext';
 
 const queryClient = new QueryClient();
@@ -27,6 +27,7 @@ function App() {
               <Route path="/register" element={<RegisterForm />} />
 
               {/* Features Related Routes */}
+              <Route path="/inventory" element={<Inventory/>}/>
               <Route path="/trades" element={<Trades />}/>
               <Route path="/fights" element={<Fights />}/>
               {/* Misc Related Routes */}

@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { APIResponse } from "../utils";
-import { inventorySchema } from '../schemas/inventory';
 import { Inventory } from '../models/Inventory';
 import { InventoryTemtem } from '../models/InventoryTemtem';
 import { Temtem } from '../models/Temtem';
