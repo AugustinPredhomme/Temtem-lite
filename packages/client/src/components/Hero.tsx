@@ -1,9 +1,8 @@
-import React from 'react';
 import '../styles/hero.scss';
-import useUserIdStore from './userId';
+import { useUser } from '../context/UserContext';
 
 const Hero = () => {
-  const userId = useUserIdStore((state) => state.userId);
+  const { userId } = useUser();
   if (userId === 0) {
     return (
       <section className="hero">

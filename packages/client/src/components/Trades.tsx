@@ -1,15 +1,17 @@
 import React from 'react';
 import '../styles/trades.scss';
-import useUserIdStore from './userId';
+import { useUser } from '../context/UserContext';
 
 const Trades = () => {
-  const userId = useUserIdStore((state) => state.userId);
+  const { userId } = useUser();
   if (userId !== 0) {
     return (
       <div>Trades</div>
     );
   }
-  return null;
+  return (
+    <div>You must be connected to use Trades</div>
+  );
 }
 
 export default Trades;

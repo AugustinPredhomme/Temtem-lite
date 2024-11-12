@@ -3,12 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOut } from '@fortawesome/free-solid-svg-icons'
 import temtem_icon from '../assets/images/temtem_icon.png'
 import { useMutation } from '@tanstack/react-query';
-import useUserIdStore from './userId';
+import { useUser } from '../context/UserContext';
 
 const Navbar = () => {
-  const userId = useUserIdStore((state) => state.userId);
-  const setUserId = useUserIdStore((state) => state.setUserId);
-
+  const { userId, setUserId } = useUser();
 
   const { mutate: logout } = useMutation({
     mutationFn: async () => {
@@ -32,7 +30,6 @@ const Navbar = () => {
   }
 
   if (userId === 0) {
-    //Logged out render
     return (
       <nav className="navbar">
         <a href='/' className="logo">
@@ -45,8 +42,6 @@ const Navbar = () => {
       </nav>
     );
   } else {
-
-    //Logged in Render
     return (
       <nav className="navbar">
         <a href='/' className="logo">
@@ -55,6 +50,7 @@ const Navbar = () => {
         <ul className="nav-links">
           <li><a href="/trades">Trades</a></li>
           <li><a href="/combats">Combats</a></li>
+          <li><a href="/inventory">Inventory</a></li>
           <li><a href="/profile">Profile</a></li>
           <div onClick={handleLogout}>
             <FontAwesomeIcon icon={faSignOut} />

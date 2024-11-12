@@ -1,17 +1,17 @@
 import React from 'react';
-import '../styles/fights.scss';
+import '../styles/inventory.scss';
 import { useUser } from '../context/UserContext';
 
-const Fights = () => {
+const Inventory = () => {
   const { userId } = useUser();
   if (userId !== 0) {  
     return (
-      <div>Fights</div>
+      <div>Inventory</div>
     );
   }
   return (
-    <div>You must be connected to use fights</div>
+    <div>You must be connected to use inventory</div>
   );
 };
 
-export default Fights;
+export default Inventory;

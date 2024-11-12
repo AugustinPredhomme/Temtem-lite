@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
 import { userSchema } from '../dependancies/schemas/user';
 import { useNavigate } from 'react-router-dom';
-import useUserIdStore from './userId';
+import { useUser } from '../context/UserContext';
 
 type FormValues = {
     username: string;
@@ -13,7 +13,7 @@ type FormValues = {
 };
 
 const LoginForm = () => {
-    const { userId, setUserId } = useUserIdStore();
+    const { userId, setUserId } = useUser();
     const navigate = useNavigate();
     const { register, handleSubmit} = useForm({
         resolver: yupResolver(userSchema)
@@ -35,24 +35,24 @@ const LoginForm = () => {
                 console.error('Login failed:', errorData.message);
                 return;
             }
+
             const loginData = await res.json();
-            console.log(loginData.data.id);    
-            setUserId(loginData.data.id);
-            console.log(userId);        
-            console.log('Login successful!', loginData);
+            setUserId(loginData.data.id);    
+
+            console.log('Login successful!');
             console.log("Redirect to Home Page");
             navigate("/");
-
             return loginData;
         },
         onError() {
-            console.error('Login failed:');
+            console.error('Login failed');
         }
     });
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
         await mutation.mutateAsync(data);
     };
+
     if (userId === 0) {
         return (
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -64,7 +64,9 @@ const LoginForm = () => {
             </form>
         );
     }
-    return null;
+    return (
+        <div>You are already connected</div>
+    );
 };
 
 export default LoginForm;

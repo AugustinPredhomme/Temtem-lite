@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { userSchema } from '../dependancies/schemas/user';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import useUserIdStore from './userId';
+import { useUser } from '../context/UserContext';
 
 type FormValues = {
   username: string;
@@ -13,7 +13,7 @@ type FormValues = {
 };
 
 const RegisterForm = () => {
-  const userId = useUserIdStore((state) => state.userId);
+  const { userId } = useUser();
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -62,7 +62,9 @@ const RegisterForm = () => {
       </form>
     );
   }
-  return null;
+  return (
+    <div>You are already connected</div>
+  );
 };
 
 export default RegisterForm;

@@ -9,53 +9,34 @@ import Resources from './components/Resources';
 import ProfileForm from './components/ProfileForm';
 import Trades from './components/Trades';
 import Fights from './components/Fights';
-import useUserIdStore from './components/userId';
+import { UserProvider } from './context/UserContext';
 
 const queryClient = new QueryClient();
 
 function App() {
-  const userId = useUserIdStore((state) => state.userId);
-  if (userId !== 0) {
     return (
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            {/* User Related Routes */}
-            <Route path="/profile" element={<ProfileForm />}/>
-            {/* Features Related Routes */}
-            <Route path="/trades" element={<Trades />}/>
-            <Route path="/fights" element={<Fights />}/>
-            {/* Misc Related Routes */}
-            <Route path="/resources" element={<Resources />} />
-          </Routes>
-          <Resources />
-        </BrowserRouter>
-      </QueryClientProvider>
-    );
-  } else {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            
-            {/* User Related Routes */}
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegisterForm />} />
+      <UserProvider>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              {/* User Related Routes */}
+              <Route path="/profile" element={<ProfileForm />}/>
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/register" element={<RegisterForm />} />
 
-            {/* Features Related Routes */}
-
-            {/* Misc Related Routes */}
-            <Route path="/resources" element={<Resources />} />
-          </Routes>
-          <Resources />
-        </BrowserRouter>
-      </QueryClientProvider>
+              {/* Features Related Routes */}
+              <Route path="/trades" element={<Trades />}/>
+              <Route path="/fights" element={<Fights />}/>
+              {/* Misc Related Routes */}
+              <Route path="/resources" element={<Resources />} />
+            </Routes>
+            <Resources />
+          </BrowserRouter>
+        </QueryClientProvider>
+      </UserProvider>
     );
-  }
 }
 
 export default App;

@@ -1,10 +1,10 @@
 import '../styles/profile.scss';
-import useUserIdStore from './userId';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { profileSchema } from '../dependancies/schemas/profile';
+import { useUser } from '../context/UserContext';
 
 type FormValues = {
   firstName?: string;
@@ -15,7 +15,7 @@ type FormValues = {
 };
 
 const ProfileForm = () => {
-  const userId = useUserIdStore((state) => state.userId);
+  const { userId} = useUser();
   const navigate = useNavigate();
   const { register, handleSubmit} = useForm({
     resolver: yupResolver(profileSchema)
@@ -80,8 +80,7 @@ const ProfileForm = () => {
       onError: (error) => {
           console.error('User modification failed:', error);
       }
-  });
-      console.log(userId);
+    });
   };
 
   if (userId !== 0) {
