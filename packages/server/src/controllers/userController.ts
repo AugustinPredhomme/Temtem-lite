@@ -52,7 +52,7 @@ export const loginUser = async (req: Request, res: Response) => {
             maxAge: 1000*60*60*24*7 //7j
         });
                 
-        return APIResponse(res, { id : user.id }, 'Login successful', 200);
+        return APIResponse(res, { id : user.id, role:user.role }, 'Login successful', 200);
     } catch (error) {
         console.error(error);
         return APIResponse(res, [], 'Login failed', 500);
@@ -124,5 +124,5 @@ export const modifyProfile = async (req: Request, res: Response) => {
 export const logout = (req: Request, res: Response) => {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
-    return APIResponse(res, [], 'User disconnected successfully', 200);
+    return APIResponse(res, {clearLocalStorage: true}, 'User disconnected successfully', 200);
 };

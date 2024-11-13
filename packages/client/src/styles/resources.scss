@@ -1,0 +1,9 @@
+@use './global.scss';
+@use './variables' as *;
+
+.resources{
+    padding: 0 0 2rem 0;
+    @media (min-width: 768px) {
+        padding: 0 0 3rem 3rem;
+    }
+}

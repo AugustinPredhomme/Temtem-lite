@@ -4,8 +4,8 @@ import { APIResponse } from '../utils';
 
 export const isAdminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userIdQuery = req.query.userId;
-    const userIdString = userIdQuery?.toString()
+    const { userId } = req.query;
+    const userIdString = userId?.toString()
     const user = await User.findByPk(userIdString);
 
     if (!user) {

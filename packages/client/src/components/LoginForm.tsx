@@ -14,7 +14,7 @@ type FormValues = {
 };
 
 const LoginForm = () => {
-    const { userId, setUserId } = useUser();
+    const { userId, setUserId, setRole } = useUser();
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors }} = useForm<FormValues>({
         resolver: yupResolver(userSchema)
@@ -42,6 +42,7 @@ const LoginForm = () => {
         },
         onSuccess: (loginData) => {
             setUserId(loginData.data.id);
+            setRole(loginData.data.role);
             console.log('Login successful! Redirecting to Home Page');
             navigate('/');
         },

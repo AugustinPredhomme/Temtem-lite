@@ -12,7 +12,7 @@ export const refreshTokenMiddleware = async (req: Request, res: Response, next: 
     if (!accessToken || !refreshToken) {
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
-        return next();
+        return APIResponse(res, {clearLocalStorage: true}, 'Missing token', 401);
     }
 
     try {
@@ -24,7 +24,7 @@ export const refreshTokenMiddleware = async (req: Request, res: Response, next: 
             res.clearCookie('accessToken');
             res.clearCookie('refreshToken');
 
-            return APIResponse(res, null, 'Invalid Refresh Token', 403);
+            return APIResponse(res, {clearLocalStorage: true}, 'Invalid Refresh Token', 403);
         }
 
 
@@ -32,7 +32,7 @@ export const refreshTokenMiddleware = async (req: Request, res: Response, next: 
         if (!user || user.refresh_token !== refreshToken) {
             res.clearCookie('accessToken');
             res.clearCookie('refreshToken');
-            return APIResponse(res, null, 'Refresh token invalide', 403);
+            return APIResponse(res, {clearLocalStorage: true}, 'Refresh token invalide', 403);
         }
 
         const newAccessToken = generateAccessToken(userId);

@@ -1,0 +1,55 @@
+@use './global.scss';
+@use './variables' as *;
+@use 'sass:color';
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 55vh;
+    text-align: center;
+
+    @media (min-width: 1024px) {
+      height: 82vh;
+    }
+  
+    h1 {
+        font-size: 3.5rem;
+        color: $font-title;
+        margin-bottom: 1rem;
+  
+        @media (min-width: 768px) {
+          font-size: 4rem;
+        }
+      }
+
+    p {
+      font-size: 1.5rem;
+      color: color.adjust($font-base, $lightness: -20%);
+      margin-bottom: 2rem;
+    }
+  
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+  
+      a {
+        button {
+          font-size: 1.25rem;
+          padding: 1rem 2rem;
+          background-color: $font-title;
+          color: $font-base;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+  
+          &:hover {
+            background-color: color.adjust($font-title, $lightness: -10%);
+          }
+        }
+      }
+    }
+  }
+  

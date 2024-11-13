@@ -1,0 +1,71 @@
+@use 'sass:color';
+@use './variables' as *;
+
+body, html {
+  font-family: 'Gotham Book', sans-serif;
+  color: $font-base;
+  background-color: $bg-base;
+  margin: 0;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  line-height: 1.6;
+  padding-top: 4.5rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $font-title;
+  font-weight: bold;
+}
+
+a {
+  color: $font-title;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+button {
+  font-family: inherit;
+  background-color: $font-title;
+  color: $font-base;
+  border: 1px solid $border;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: color.adjust($font-title, $lightness: -10%);
+  }
+}
+
+.error {
+  color: $font-error;
+  background-color: $bg-error;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  padding: 0.5rem;
+  margin: 0.5rem 0.5rem;
+  border: 1px solid $font-base;
+  border-radius: 4px;
+  color: $font-base;
+  background-color: color.adjust($bg-base, $lightness: -5%);
+  
+  &:focus {
+    outline: none;
+    border-color: $font-title;
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.hidden {
+  display: none !important;
+}
