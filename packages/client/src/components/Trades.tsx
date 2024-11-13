@@ -143,9 +143,11 @@ const Trades = () => {
                 <option>Loading users...</option>
               ) : (
                 users?.data?.map((user: any) => (
+                  user.id !== userId && (
                   <option key={user.id} value={user.id}>
                     {user.username}
                   </option>
+                  )
                 ))
               )}
             </select>

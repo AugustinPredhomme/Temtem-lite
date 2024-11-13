@@ -52,6 +52,23 @@ export const checkInventory = async (req: Request, res: Response) => {
     }
 };
 
+export const checkAllInventories = async (req: Request, res: Response) => {
+    try {
+      const inventories = await Inventory.findAll({
+        include: [{ model: Temtem, through: { attributes: [] } }]
+      });
+      
+      const filteredInventories = inventories.filter(inventory => inventory.Temtems && inventory.Temtems.length > 1);
+  
+      return APIResponse(res, filteredInventories, 'Inventories fetched', 200);
+    } catch (error) {
+      console.error(error);
+      return APIResponse(res, [], 'Error fetching inventories', 500);
+    }
+  };
+  
+  
+
 export const deleteTemtemFromInventory = async (req: Request, res: Response) => {
     try {
         const  { userId, temtemId } = req.params;

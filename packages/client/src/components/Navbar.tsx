@@ -1,5 +1,3 @@
-// Navbar.tsx
-
 import '../styles/navbar.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOut, faBars } from '@fortawesome/free-solid-svg-icons';
@@ -27,7 +25,6 @@ const Navbar = () => {
 
       setUserId(0);
       setRole('');
-      localStorage.clear();
       console.log('User Logged Out');
     },
     onError: (error: any) => {

@@ -1,12 +1,17 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Association } from 'sequelize';
 import { sequelize } from '../config/database';
+import { Temtem } from './Temtem';
 
 export interface Inventory {
     id: number
     userId: number;
+    Temtems?: Temtem[];
 }
 
 export class Inventory extends Model {
+  static associations: {
+    Temtems: Association<Inventory,Temtem>;
+  }
 }
 
 Inventory.init({
@@ -29,3 +34,6 @@ Inventory.init({
   tableName: 'inventory',
   timestamps: false,
 })
+
+Inventory.belongsToMany(Temtem, { through: 'InventoryTemtem', foreignKey: 'inventory_id' });
+Temtem.belongsToMany(Inventory, { through: 'InventoryTemtem', foreignKey: 'temtem_id' });
