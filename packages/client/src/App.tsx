@@ -21,6 +21,7 @@ function App() {
         <BrowserRouter>
           <Navbar />
             <Routes>
+              {/* Base Route */}
               <Route path="/" element={<HomePage />} />
               
               {/* User Related Routes */}

@@ -88,7 +88,6 @@ const Navbar = () => {
         <FontAwesomeIcon icon={faBars} />
       </div>
 
-      {/* Navigation links */}
       <ul className={`nav-links ${menuOpen ? 'open' : ''}`}>
         {userId === 0 ? (
           <>
@@ -112,7 +111,6 @@ const Navbar = () => {
         )}
       </ul>
       
-      {/* Error message display */}
       {error && <div className="error-message">{error}</div>}
     </nav>
   );

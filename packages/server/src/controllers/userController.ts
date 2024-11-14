@@ -93,7 +93,6 @@ export const modifyProfile = async (req: Request, res: Response) => {
     try {
         const id = req.params.userId;
         const getUser = await User.findOne({ attributes: ['username', 'email', 'password'], where: { id: id }});
-        //Add getUser (not modifiable) infos to req.body
         req.body.username = getUser?.username;
         req.body.email = getUser?.email;
         req.body.password = getUser?.password;

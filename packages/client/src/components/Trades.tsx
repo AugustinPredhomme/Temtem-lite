@@ -19,6 +19,7 @@ const Trades = () => {
   const [ userTemtems, setUserTemtems ] = useState<any[]>([]);
   const [ showHistory, setShowHistory ] = useState(false);
 
+  // GET All Users
   const { data: users, isLoading: usersLoading } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
@@ -35,6 +36,7 @@ const Trades = () => {
     },
   });
 
+  // GET User Inventory
   const { data: inventory, isLoading: inventoryLoading } = useQuery({
     queryKey: ['inventory', userId],
     queryFn: async () => {
@@ -52,6 +54,7 @@ const Trades = () => {
     enabled: !!userId
   });
 
+  // GET Trade History
   const { data: trades, isLoading: tradesLoading } = useQuery({
     queryKey: ['trades', userId],
     queryFn: async () => {
@@ -69,6 +72,7 @@ const Trades = () => {
     enabled: role === 'admin',
   });
 
+  // GET Create Trade & Log in DB
   const { mutate: createTrade, status } = useMutation({
     mutationFn: async (data: FormValues) => {
       const res = await fetch('http://localhost:3001/api/trade/', {

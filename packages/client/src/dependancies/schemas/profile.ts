@@ -6,5 +6,5 @@ export const profileSchema = yup.object().shape({
     role: yup.string(),
     birthday: yup.date(),
     country: yup.string(),
-    phone: yup.string().matches(/^\d{10,15}$/), // Basic phone number validation
+    phone: yup.string().matches(/^\d{10,15}$/),
 });

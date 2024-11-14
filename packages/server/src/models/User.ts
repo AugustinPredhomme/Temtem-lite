@@ -8,7 +8,7 @@ export interface User {
     firstName?: string;
     lastName?: string;
     email: string;
-    password: string; //hash password before storing it
+    password: string;
     role?: string; // user / admin
     birthday?: Date;
     country?: string;

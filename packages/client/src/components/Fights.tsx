@@ -14,7 +14,7 @@ const Fights = () => {
   const [userTemtems, setUserTemtems] = useState<any[]>([]);
   const [selectedInventory, setSelectedInventory] = useState<any | null>(null);
 
-  // Fetch users
+  // GET All Users
   const fetchUsers = async () => {
     try {
       const res = await fetch('http://localhost:3001/api/user/', {
@@ -28,7 +28,7 @@ const Fights = () => {
     }
   };
 
-  // Fetch Temtems for the logged-in user
+  // GET Logged-in User Temtems
   const fetchUserTemtems = async (userId: number) => {
     try {
       const res = await fetch(`http://localhost:3001/api/inventory/${userId}`, {
@@ -42,7 +42,7 @@ const Fights = () => {
     }
   };
 
-  // Fetch opponent's Temtems
+  // GET Opponent Temtems
   const fetchOpponentTemtems = async (userId: number) => {
     try {
       const res = await fetch(`http://localhost:3001/api/inventory/${userId}`, {
@@ -56,7 +56,7 @@ const Fights = () => {
     }
   };
 
-  // Fetch skills for a Temtem
+  // GET Specific Temtem Skills
   const fetchTemtemSkills = async (temtemId: number) => {
     try {
       const res = await fetch(`http://localhost:3001/api/temtemSkill/${temtemId}/skill/`, {
@@ -71,14 +71,12 @@ const Fights = () => {
     }
   };
 
-  // Fetch opponent's Temtems on change
   useEffect(() => {
     if (userTwoId) {
       fetchOpponentTemtems(userTwoId);
     }
   }, [userTwoId]);
 
-  // Calculate damage
   const calculateDamage = (attacker: any, defender: any, skill: any) => {
     let damage = skill.damage;
 
@@ -91,7 +89,6 @@ const Fights = () => {
     return damage;
   };
 
-  // Handle fight logic
   const handleFight = async () => {
     if (!selectedUserOneTemtem || !selectedUserTwoTemtem) {
       alert('Please select both Temtems to fight');
@@ -112,7 +109,6 @@ const Fights = () => {
     const userOneSkill = userOneSkills[0];
     const userTwoSkill = userTwoSkills[0];
   
-    // Get the usernames for battle logs
     const userOneName = users.find(user => user.id === user_one)?.username || `User ${user_one}`;
     const userTwoName = users.find(user => user.id === user_two)?.username || `User ${user_two}`;
   
@@ -125,48 +121,45 @@ const Fights = () => {
       `${temtem_two.name} (${userTwoName}) starts with ${temtem_two.health} health.`
     ]);
   
-    // Turn 1: User One attacks
+    // User 1 attacks
     userTwoHealth -= calculateDamage(temtem_one, temtem_two, userOneSkill);
     setBattleLogs((logs) => [
       ...logs,
       `${temtem_one.name} (${userOneName}) attacks ${temtem_two.name} (${userTwoName}) with ${userOneSkill.name}, dealing ${userOneSkill.damage} damage.`
     ]);
   
-    // Check if User Two is knocked out after User One's attack
     if (userTwoHealth <= 0) {
       setBattleLogs((logs) => [
         ...logs,
         `${temtem_two.name} (${userTwoName}) is knocked out!`
       ]);
       setResult(`${temtem_one.name} (${userOneName}) wins!`);
-      return; // End the battle after knockout
+      return;
     }
   
-    // Turn 2: User Two attacks
+    // User 2 attacks
     userOneHealth -= calculateDamage(temtem_two, temtem_one, userTwoSkill);
     setBattleLogs((logs) => [
       ...logs,
       `${temtem_two.name} (${userTwoName}) attacks ${temtem_one.name} (${userOneName}) with ${userTwoSkill.name}, dealing ${userTwoSkill.damage} damage.`
     ]);
   
-    // Check if User One is knocked out after User Two's attack
     if (userOneHealth <= 0) {
       setBattleLogs((logs) => [
         ...logs,
         `${temtem_one.name} (${userOneName}) is knocked out!`
       ]);
       setResult(`${temtem_two.name} (${userTwoName}) wins!`);
-      return; // End the battle after knockout
+      return;
     }
   
-    // If both are still standing, determine the winner based on remaining health
     if (userOneHealth > userTwoHealth) {
       setResult(`${temtem_one.name} (${userOneName}) wins!`);
     } else {
       setResult(`${temtem_two.name} (${userTwoName}) wins!`);
     }
   
-    // Save result to backend
+    // Save result to DB
     try {
       const response = await fetch('http://localhost:3001/api/fight/', {
         method: 'POST',
@@ -184,7 +177,6 @@ const Fights = () => {
       console.error('Error saving fight result:', error);
     }
   };
-  
 
   useEffect(() => {
     fetchUsers();

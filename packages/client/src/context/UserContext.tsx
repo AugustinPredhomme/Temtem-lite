@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import CryptoJS from 'crypto-js';
 
 const USER_ID_SECRET_KEY = process.env.REACT_APP_USER_ID_SECRET_KEY || 'secret';
-const USER_ROLE_SECRET_KEY = process.env.REACT_APP_USER_ROLE_SECRET_KEY || 'roleSecret';  // For role encryption
+const USER_ROLE_SECRET_KEY = process.env.REACT_APP_USER_ROLE_SECRET_KEY || 'roleSecret';
 
 interface UserContextType {
   userId: number;
