@@ -31,8 +31,10 @@ DB_PORT=''
 JWT_SECRET= ''
 REFRESH_TOKEN_SECRET = ''
 ```
-4. Lancez l'application : À la racine du projet, utilisez la commande suivante :
+4. Lancez l'application : À la racine du projet, utilisez les commandes suivante :
 ```bash
+npm install
+lerna run build --parallel
 lerna run start --parallel
 ```
 
