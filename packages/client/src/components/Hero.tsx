@@ -10,10 +10,14 @@ const Hero = () => {
       <h1>Temtem-Lite</h1>
       <p>Simplified Temtem</p>
       {userId === 0 && (
-        <div className="buttons">
-          <a href="/register"><button>Register</button></a>
-          <a href="/login"><button>Login</button></a>
-        </div>
+      <div className="buttons">
+        <a href="/register">
+        <button id="register-button" tabIndex={0}>Register</button>
+        </a>
+        <a href="/login">
+        <button id="login-button" tabIndex={0}>Login</button>
+        </a>
+      </div>
       )}
     </section>
   );

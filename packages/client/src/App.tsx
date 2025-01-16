@@ -10,6 +10,8 @@ import Trades from './components/Trades';
 import Fights from './components/Fights';
 import Inventory from './components/Inventory';
 import { UserProvider } from './context/UserContext';
+import { GlobalStateProvider } from './context/GlobalStateContext';
+import Dashboard from './components/Dashboard';
 
 const queryClient = new QueryClient();
 
@@ -17,28 +19,31 @@ function App() {
 
   return (
     <UserProvider>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Navbar />
-            <Routes>
-              {/* Base Route */}
-              <Route path="/" element={<HomePage />} />
-              
-              {/* User Related Routes */}
-              <Route path="/profile" element={<ProfileForm />}/>
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/register" element={<RegisterForm />} />
+      <GlobalStateProvider>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <Navbar />
+              <Routes>
+                {/* Base Route */}
+                <Route path="/" element={<HomePage />} />
+                
+                {/* User Related Routes */}
+                <Route path="/profile" element={<ProfileForm />}/>
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/register" element={<RegisterForm />} />
 
-              {/* Features Related Routes */}
-              <Route path="/inventory" element={<Inventory/>}/>
-              <Route path="/trades" element={<Trades />}/>
-              <Route path="/fights" element={<Fights />}/>
+                {/* Features Related Routes */}
+                <Route path="/inventory" element={<Inventory/>}/>
+                <Route path="/trades" element={<Trades />}/>
+                <Route path="/fights" element={<Fights />}/>
 
-              {/* Misc Related Routes */}
-            </Routes>
-          <Resources />
-        </BrowserRouter>
-      </QueryClientProvider>
+                {/* Misc Related Routes */}
+                <Route path="/dashboard" element={<Dashboard />} />
+              </Routes>
+            <Resources />
+          </BrowserRouter>
+        </QueryClientProvider>
+      </GlobalStateProvider>
     </UserProvider>
   );
 }

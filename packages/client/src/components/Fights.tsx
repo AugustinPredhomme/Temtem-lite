@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react';
+import { useGlobalState } from '../context/GlobalStateContext';
 import { useUser } from '../context/UserContext';
 import '../styles/fights.scss';
+import { URI, PORT } from '../config/env';
 
 const Fights = () => {
   const { userId } = useUser();
-  const [users, setUsers] = useState<any[]>([]);
-  const [userTwoId, setUserTwoId] = useState<number | null>(null);
-  const [selectedUserTwoTemtem, setSelectedUserTwoTemtem] = useState<any | null>(null);
-  const [selectedUserOneTemtem, setSelectedUserOneTemtem] = useState<any | null>(null);
-  const [result, setResult] = useState<string | null>(null);
-  const [battleLogs, setBattleLogs] = useState<string[]>([]);
-
-  const [userTemtems, setUserTemtems] = useState<any[]>([]);
-  const [selectedInventory, setSelectedInventory] = useState<any | null>(null);
+  const {
+    users, setUsers,
+    userTwoId, setUserTwoId,
+    selectedUserTwoTemtem, setSelectedUserTwoTemtem,
+    selectedUserOneTemtem, setSelectedUserOneTemtem,
+    result, setResult,
+    battleLogs, setBattleLogs,
+    userTemtems, setUserTemtems,
+    selectedInventory, setSelectedInventory,
+  } = useGlobalState();
 
   // GET All Users
   const fetchUsers = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/user/', {
+      const res = await fetch(`${URI}:${PORT}/api/user/`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -31,7 +34,7 @@ const Fights = () => {
   // GET Logged-in User Temtems
   const fetchUserTemtems = async (userId: number) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/inventory/${userId}`, {
+      const res = await fetch(`${URI}:${PORT}/api/inventory/${userId}`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -45,7 +48,7 @@ const Fights = () => {
   // GET Opponent Temtems
   const fetchOpponentTemtems = async (userId: number) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/inventory/${userId}`, {
+      const res = await fetch(`${URI}:${PORT}/api/inventory/${userId}`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -59,7 +62,7 @@ const Fights = () => {
   // GET Specific Temtem Skills
   const fetchTemtemSkills = async (temtemId: number) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/temtemSkill/${temtemId}/skill/`, {
+      const res = await fetch(`${URI}:${PORT}/api/temtemSkill/${temtemId}/skill/`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -161,7 +164,7 @@ const Fights = () => {
   
     // Save result to DB
     try {
-      const response = await fetch('http://localhost:3001/api/fight/', {
+      const response = await fetch(`${URI}:${PORT}/api/fight/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -187,65 +190,73 @@ const Fights = () => {
 
   return (
     <div className='fight'>
+      <header>
       <h1>Battle Setup</h1>
-
-      <label>Select Your Temtem:</label>
+      </header>
+      <main>
+      <label htmlFor="userTemtem">Select Your Temtem:</label>
       <select
+        id="userTemtem"
+        tabIndex={0}
         value={selectedUserOneTemtem?.id || ''}
         onChange={(e) =>
-          setSelectedUserOneTemtem(
-            selectedInventory.Temtems.find(
-              (temtem: any) => temtem.id === Number(e.target.value)
-            )
+        setSelectedUserOneTemtem(
+          selectedInventory.Temtems.find(
+          (temtem: any) => temtem.id === Number(e.target.value)
           )
+        )
         }
       >
         <option value="">Select a Temtem</option>
         {selectedInventory?.Temtems?.map((temtem: any) => (
-          <option key={temtem.id} value={temtem.id}>
-            {temtem.name}
-          </option>
+        <option key={temtem.id} value={temtem.id}>
+          {temtem.name}
+        </option>
         ))}
       </select>
 
-      <label>Select Opponent:</label>
+      <label htmlFor="opponent">Select Opponent:</label>
       <select
+        id="opponent"
+        tabIndex={1}
         value={userTwoId || ''}
         onChange={(e) => setUserTwoId(Number(e.target.value))}
       >
         <option value="">Select a user</option>
         {users.map((user: any) => (
-          user.id !== userId && (
-            <option key={user.id} value={user.id}>
-              {user.username || `User ${user.id}`}
-            </option>
-          )
+        user.id !== userId && (
+          <option key={user.id} value={user.id}>
+          {user.username || `User ${user.id}`}
+          </option>
+        )
         ))}
       </select>
 
-      <label>Select Opponent's Temtem:</label>
+      <label htmlFor="opponentTemtem">Select Opponent's Temtem:</label>
       <select
+        id="opponentTemtem"
+        tabIndex={2}
         value={selectedUserTwoTemtem?.id || ''}
         onChange={(e) =>
-          setSelectedUserTwoTemtem(
-            userTemtems.find((temtem) => temtem.id === Number(e.target.value))
-          )
+        setSelectedUserTwoTemtem(
+          userTemtems.find((temtem) => temtem.id === Number(e.target.value))
+        )
         }
       >
         <option value="">Select a Temtem</option>
         {userTemtems.length > 0 ? (
-          userTemtems.map((temtem: any) => (
-            <option key={temtem.id} value={temtem.id}>
-              {temtem.name}
-            </option>
-          ))
+        userTemtems.map((temtem: any) => (
+          <option key={temtem.id} value={temtem.id}>
+          {temtem.name}
+          </option>
+        ))
         ) : (
-          <option value="">No Temtems available</option>
+        <option value="">No Temtems available</option>
         )}
       </select>
 
       <br />
-      <button onClick={handleFight}>Start Fight</button>
+      <button tabIndex={3} onClick={handleFight}>Start Fight</button>
 
       <h2>Fight Result:</h2>
       <p>{result}</p>
@@ -253,9 +264,10 @@ const Fights = () => {
       <h3>Battle Logs:</h3>
       <ul>
         {battleLogs.map((log, index) => (
-          <li key={index}>{log}</li>
+        <li key={index}>{log}</li>
         ))}
       </ul>
+      </main>
     </div>
   );
 };

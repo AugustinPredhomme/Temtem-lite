@@ -24,7 +24,7 @@ export const getAllSkills = async (req: Request, res: Response) => {
         const allSkills = await Skill.findAll();
         
         if (!allSkills) {
-            return APIResponse(res, [], 'No skill found', 400);
+            return APIResponse(res, [], 'No skill found', 404);
         }
         return APIResponse(res, allSkills, 'All skills have been returned', 200);
     } catch (error: any) {
@@ -39,7 +39,7 @@ export const checkSkill = async (req: Request, res: Response) => {
         const skill = await Skill.findOne({ where: { id: skillId }});
 
         if(!skill) {
-            return APIResponse(res, [], 'Skill not found', 400);
+            return APIResponse(res, [], 'Skill not found', 404);
         }
 
         return APIResponse(res, skill, 'Skill checked successfully', 200);
@@ -56,7 +56,7 @@ export const modifySkill = async (req: Request, res: Response) => {
         const { name, damage, cooldown } = validatedSkill;
         const skill = await Skill.findByPk(skillId);
         if (!skill) {
-            return APIResponse(res, skillId, 'Skill not found', 400);
+            return APIResponse(res, skillId, 'Skill not found', 404);
         }
         skill.name = name;
         skill.damage = damage;

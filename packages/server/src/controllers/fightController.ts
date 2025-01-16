@@ -11,12 +11,12 @@ export const createFight = async (req: Request, res: Response) => {
 
         const validUserOne = await User.findByPk(user_one);
         if (!validUserOne) {
-            return APIResponse(res, user_one, `User ${user_one} not found`, 400);
+            return APIResponse(res, user_one, `User ${user_one} not found`, 404);
         }
 
         const validUserTwo = await User.findByPk(user_two);
         if (!validUserTwo) {
-            return APIResponse(res, user_two, `User ${user_two} not found`, 400);
+            return APIResponse(res, user_two, `User ${user_two} not found`, 404);
         }
 
         if (winner !== user_one && winner !== user_two) {
@@ -36,7 +36,7 @@ export const getAllFights = async (req: Request, res: Response) => {
     try {
         const allFights = await Fight.findAll();
         if (!allFights) {
-            return APIResponse(res, [], 'No fight found', 400);
+            return APIResponse(res, [], 'No fight found', 404);
         }
         return APIResponse(res, allFights, 'All fights have been returned', 200);
     } catch (error: any) {

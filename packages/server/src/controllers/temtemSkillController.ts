@@ -9,11 +9,11 @@ export const addSkillToTemtem = async (req: Request, res: Response) => {
         const { temtemId, skillId } = req.params;
         const temtem = await Temtem.findByPk(temtemId);
         if (!temtem) {
-            return APIResponse(res, temtemId, 'Temtem not found', 400);
+            return APIResponse(res, temtemId, 'Temtem not found', 404);
         }
         const skill = await Skill.findByPk(skillId);
         if (!skill) {
-            return APIResponse(res, skillId, 'Skill not found', 400);
+            return APIResponse(res, skillId, 'Skill not found', 404);
         }
         const [temtemSkill, created] = await TemtemSkill.findOrCreate({ where: { temtem_id: temtemId, skill_id: skillId }});
         if (!created) {
@@ -32,12 +32,12 @@ export const removeSkillFromTemtem = async (req: Request, res: Response) => {
 
         const temtem = await Temtem.findByPk(temtemId);
         if (!temtem) {
-            return APIResponse(res, temtemId, 'Temtem not found', 400);
+            return APIResponse(res, temtemId, 'Temtem not found', 404);
         }
 
         const skill = await Skill.findByPk(skillId);
         if (!skill) {
-            return APIResponse(res, skillId, 'Skill not found', 400);
+            return APIResponse(res, skillId, 'Skill not found', 404);
         }
 
         await TemtemSkill.destroy({ where: { temtem_id: temtemId, skill_id: skillId }});
@@ -53,7 +53,7 @@ export const getTemtemSkills = async (req: Request, res: Response) => {
 
         const temtem = await Temtem.findOne({ where: { id: temtemId }, include: [{ model: Skill, through: { attributes: [] }}]});
         if (!temtem) {
-            return APIResponse(res, temtemId, 'Temtem not found', 400);
+            return APIResponse(res, temtemId, 'Temtem not found', 404);
         }
 
         return APIResponse(res, temtem, 'Temtem skills checked successfully', 200);

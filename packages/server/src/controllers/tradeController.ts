@@ -15,29 +15,29 @@ export const createTrade = async (req: Request, res: Response) => {
 
         const userOne = await User.findByPk(user_one);
         if (!userOne) {
-        return APIResponse(res, user_one, 'User one not found', 400);
+        return APIResponse(res, user_one, 'User one not found', 404);
         }
 
         const userTwo = await User.findByPk(user_two);
         if (!userTwo) {
-        return APIResponse(res, user_two, 'User two not found', 400);
+        return APIResponse(res, user_two, 'User two not found', 404);
         }
 
         const temtem = await Temtem.findByPk(temtem_id);
         if (!temtem) {
-        return APIResponse(res, temtem_id, 'Temtem not found', 400);
+        return APIResponse(res, temtem_id, 'Temtem not found', 404);
         }
 
         const userOneInventory = await Inventory.findOne({ where: { user_id: user_one } });
         if (!userOneInventory) {
-        return APIResponse(res, [], `User ${user_one} inventory not found`, 400);
+        return APIResponse(res, [], `User ${user_one} inventory not found`, 404);
         }
 
         const [userTwoInventory] = await Inventory.findOrCreate({ where: { user_id: user_two } });
 
         const userOneInventoryTemtem = await InventoryTemtem.findOne({ where: { inventory_id: userOneInventory.id, temtem_id } });
         if (!userOneInventoryTemtem) {
-        return APIResponse(res, [], `Temtem not found in user ${user_one} inventory`, 400);
+        return APIResponse(res, [], `Temtem not found in user ${user_one} inventory`, 404);
         }
 
         const [userTwoInventoryTemtem, create] = await InventoryTemtem.findOrCreate({ where: { inventory_id: userTwoInventory.id, temtem_id } });
@@ -62,7 +62,7 @@ export const getAllTrades = async (req: Request, res: Response) => {
           });
   
       if (!allTrades) {
-        return APIResponse(res, [], 'No trades found', 400);
+        return APIResponse(res, [], 'No trades found', 404);
       }
   
       return APIResponse(res, allTrades, 'All trades have been returned', 200);

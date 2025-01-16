@@ -6,6 +6,7 @@ import { userSchema } from '../dependancies/schemas/user';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { useState } from 'react';
+import { URI, PORT } from '../config/env';
 
 type FormValues = {
     username: string;
@@ -24,7 +25,7 @@ const LoginForm = () => {
 
     const mutation = useMutation({
         mutationFn: async (data: FormValues) => {
-            const res = await fetch('http://localhost:3001/api/user/login', {
+            const res = await fetch(`${URI}:${PORT}/api/user/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -61,35 +62,51 @@ const LoginForm = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className='login-form'>
-            <h2>Login</h2>
-            {error && <div className='error-message'>{error}</div>}
+        <div className='login-container'>
+            <header>
+            <h1>Welcome to Temtem-lite</h1>
+            </header>
+            <main>
+            <form onSubmit={handleSubmit(onSubmit)} className='login-form'>
+                <h2>Login</h2>
+                {error && <div className='error-message'>{error}</div>}
 
-            <input 
+                <label htmlFor='username'>Username</label>
+                <input 
+                id='username'
                 type="text" 
                 placeholder="Username" 
                 {...register('username', {required: true, maxLength: 50})}
-            />
-            {errors.username && <p className='error'>{errors.username.message}</p>}
+                tabIndex={0}
+                />
+                {errors.username && <p className='error'>{errors.username.message}</p>}
 
-            <input 
+                <label htmlFor='email'>Email</label>
+                <input 
+                id='email'
                 type="email" 
                 placeholder="Email" 
                 {...register('email', {required: true, pattern: /^\S+@\S+$/i})}
-            />
-            {errors.email && <p className='error'>{errors.email.message}</p>}
+                tabIndex={0}
+                />
+                {errors.email && <p className='error'>{errors.email.message}</p>}
 
-            <input 
+                <label htmlFor='password'>Password</label>
+                <input 
+                id='password'
                 type="password" 
                 placeholder="Password" 
                 {...register('password', {required: true, minLength: 8, maxLength: 50})}
-            />
-            {errors.password && <p className='error'>{errors.password.message}</p>}
+                tabIndex={0}
+                />
+                {errors.password && <p className='error'>{errors.password.message}</p>}
 
-            <button type="submit" disabled={mutation.status === 'pending'}>
+                <button type="submit" disabled={mutation.status === 'pending'} tabIndex={0}>
                 {mutation.status === 'pending' ? 'Logging in...' : 'Login'}
-            </button>
-        </form>
+                </button>
+            </form>
+            </main>
+        </div>
     );
 };
 

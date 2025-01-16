@@ -28,7 +28,7 @@ export const loginUser = async (req: Request, res: Response) => {
         const user = await User.findOne({ where: { email }});
 
         if (!user) {
-            return APIResponse(res, [], 'User not found', 400);
+            return APIResponse(res, [], 'User not found', 404);
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
@@ -64,7 +64,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
         const allUsers = await User.findAll();
         
         if (!allUsers) {
-            return APIResponse(res, [], 'No user found', 400);
+            return APIResponse(res, [], 'No user found', 404);
         }
         return APIResponse(res, allUsers, 'All users have been returned', 200);
     } catch (error: any) {
@@ -73,13 +73,29 @@ export const getAllUsers = async (req: Request, res: Response) => {
     }
 }
 
+export const getAllUsersClient = async (req: Request, res: Response) => {
+    try {
+        const allUsers = await User.findAll({
+            attributes: ['username', 'first_name', 'last_name']
+        });
+
+        if (!allUsers) {
+            return APIResponse(res, [], 'No user found', 404);
+        }
+        return APIResponse(res, allUsers, 'All users have been returned', 200);
+    } catch (error: any) {
+        console.log(error);
+        return APIResponse(res, [], 'Get all users failed', 500);
+    }
+};
+
 export const checkProfile = async (req: Request, res: Response) => {
     try {
         const id = parseInt(req.params.userId);
-        const user = await User.findOne({ attributes: ['username', 'first_name', 'last_name', 'email', 'birthday', 'country', 'phone'], where: { id }});
+        const user = await User.findOne({ attributes: ['username', 'first_name', 'last_name', 'birthday', 'country', 'phone'], where: { id }});
 
         if(!user) {
-            return APIResponse(res, [], 'User not found', 400);
+            return APIResponse(res, [], 'User not found', 404);
         }
 
         return APIResponse(res, user, 'User profile checked successfully', 200);

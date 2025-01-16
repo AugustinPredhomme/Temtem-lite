@@ -15,6 +15,9 @@ lerna bootstrap
 - A mettre à la racine de l'application React (packages/client/) :
 ```bash
 REACT_APP_USER_ID_SECRET_KEY = ''
+QUERY_URI = '';
+QUERY_PORT = '';
+REACT_ENV = '';
 ```
 - A mettre à la racine de l'application NodeJS (packages/server/) :
 ```bash

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { registerUser, loginUser, getAllUsers, checkProfile, modifyProfile, logout } from '../controllers/userController';
+import { registerUser, loginUser, getAllUsers, checkProfile, modifyProfile, logout, getAllUsersClient } from '../controllers/userController';
 import { authMiddleware, isAdminMiddleware, isNotAuthenticated } from '../middlewares';
 
 const router = Router();
@@ -11,8 +11,11 @@ router.post('/register', isNotAuthenticated, registerUser);
 // POST // http://localhost:3001/api/user/login/[] (Connect)
 router.post('/login', isNotAuthenticated, loginUser);
 
+// GET // http://localhost:3001/api/user/admin/[] (Get all users)
+router.get('/admin', authMiddleware, isAdminMiddleware, getAllUsers);
+
 // GET // http://localhost:3001/api/user/[] (Get all users)
-router.get('/', authMiddleware, getAllUsers);
+router.get('/', authMiddleware, getAllUsersClient);
 
 // GET // http://localhost:3001/api/user/profile/[id] (Check user infos)
 router.get("/profile/:userId", authMiddleware, checkProfile);

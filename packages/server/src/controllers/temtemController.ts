@@ -25,7 +25,7 @@ export const getAllTemtems = async (req: Request, res: Response) => {
         const allTemtems = await Temtem.findAll();
         
         if (!allTemtems) {
-            return APIResponse(res, [], 'No temtem found', 400);
+            return APIResponse(res, [], 'No temtem found', 404);
         }
         return APIResponse(res, allTemtems, 'All temtems have been returned', 200);
     } catch (error: any) {
@@ -40,7 +40,7 @@ export const checkTemtem = async (req: Request, res: Response) => {
         const temtem = await Temtem.findOne({ where: { id: temtemId }});
 
         if(!temtem) {
-            return APIResponse(res, [], 'Temtem not found', 400);
+            return APIResponse(res, [], 'Temtem not found', 404);
         }
 
         return APIResponse(res, temtem, 'Temtem checked successfully', 200);
@@ -57,7 +57,7 @@ export const modifyTemtem = async (req: Request, res: Response) => {
         const { name, health, type_one } = validatedSkill;
         const temtem = await Temtem.findByPk(temtemId);
         if (!temtem) {
-            return APIResponse(res, temtemId, 'Temtem not found', 400);
+            return APIResponse(res, temtemId, 'Temtem not found', 404);
         }
         temtem.name = name;
         temtem.health = health;

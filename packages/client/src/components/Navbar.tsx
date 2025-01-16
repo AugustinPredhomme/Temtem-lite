@@ -4,16 +4,18 @@ import { faSignOut, faBars } from '@fortawesome/free-solid-svg-icons';
 import temtem_icon from '../assets/images/temtem_icon.png';
 import { useMutation } from '@tanstack/react-query';
 import { useUser } from '../context/UserContext';
+import { useGlobalState } from '../context/GlobalStateContext';
 import { useState, useEffect } from 'react';
+import { URI, PORT } from '../config/env';
 
 const Navbar = () => {
-  const { userId, setUserId, setRole } = useUser();
+  const { userId, setUserId, role, setRole } = useUser();
   const [error, setError] = useState<string | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const {menuOpen, setMenuOpen} = useGlobalState();
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch('http://localhost:3001/api/user/logout', {
+      const res = await fetch(`${URI}:${PORT}/api/user/logout`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -78,41 +80,46 @@ const Navbar = () => {
   }, [menuOpen]);
 
   return (
-    <nav className={`navbar ${menuOpen ? 'open' : ''}`}>
+    <header>
+      <nav className={`navbar ${menuOpen ? 'open' : ''}`}>
       <a href="/" className="logo">
         <img src={temtem_icon} alt="Temtem Lite Logo"/>
       </a>
       
       {/* Burger menu icon */}
-      <div className="menu-icon" onClick={toggleMenu}>
+      <div className="menu-icon" onClick={toggleMenu} role="button" tabIndex={0} aria-label="Toggle menu">
         <FontAwesomeIcon icon={faBars} />
       </div>
 
       <ul className={`nav-links ${menuOpen ? 'open' : ''}`}>
         {userId === 0 ? (
-          <>
-            <li><a href="/login">Login</a></li>
-            <li><a href="/register">Register</a></li>
-          </>
+        <>
+          <li><a href="/login" tabIndex={0}>Login</a></li>
+          <li><a href="/register" tabIndex={0}>Register</a></li>
+        </>
         ) : (
-          <>
-            <li><a href="/trades">Trades</a></li>
-            <li><a href="/fights">Fights</a></li>
-            <li><a href="/inventory">Inventory</a></li>
-            <li><a href="/profile">Profile</a></li>
-            <li onClick={handleLogout} className="logout">
-              {mutation.status === 'pending' ? (
-                <span>Logging out...</span>
-              ) : (
-                window.innerWidth < 768 ? 'Logout' : <FontAwesomeIcon icon={faSignOut} />
-              )}
-            </li>
-          </>
+        <>
+          {role === 'admin' && (
+          <li><a href="/dashboard" tabIndex={0}>Dashboard</a></li>
+          )}
+          <li><a href="/trades" tabIndex={0}>Trades</a></li>
+          <li><a href="/fights" tabIndex={0}>Fights</a></li>
+          <li><a href="/inventory" tabIndex={0}>Inventory</a></li>
+          <li><a href="/profile" tabIndex={0}>Profile</a></li>
+          <li onClick={handleLogout} className="logout" role="button" tabIndex={0} aria-label="Logout">
+          {mutation.status === 'pending' ? (
+            <span>Logging out...</span>
+          ) : (
+            window.innerWidth < 768 ? 'Logout' : <FontAwesomeIcon icon={faSignOut} />
+          )}
+          </li>
+        </>
         )}
       </ul>
       
       {error && <div className="error-message">{error}</div>}
-    </nav>
+      </nav>
+    </header>
   );
 };
 

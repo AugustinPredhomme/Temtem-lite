@@ -1,0 +1,43 @@
+@use './global.scss';
+@use './variables' as *;
+
+.dashboard, .dashboard-section, .dashboard-form, .dashboard-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    @media (min-width: 768px) {
+        .element {
+            flex: 1;
+            padding: 1rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        align-items: flex-start;
+        .element {
+            flex: 2;
+            padding: 2rem;
+            
+        }
+    }
+}
+
+.dashboard-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content:flex-start;
+    margin-bottom: 2rem;
+}
+
+.dashboard-section, .dashboard-form {
+    @media (min-width: 1024px) {
+        align-items: normal;
+        width: 20vw;
+    }
+}
+
+.element {
+    padding: 0.5rem;
+    background-color: $bg-base;
+    border: 1px solid $border;
+}

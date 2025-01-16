@@ -17,7 +17,7 @@ export const addTemtemToInventory = async (req: Request, res: Response) => {
         for (const temtemId of temtemIds) {
             const temtem = await Temtem.findByPk(temtemId);
             if (!temtem) {
-                return APIResponse(res, [], 'Temtem not found', 400);
+                return APIResponse(res, [], 'Temtem not found', 404);
             }
 
             const [inventoryTemtem, temtemCreated] = await InventoryTemtem.findOrCreate({
@@ -43,7 +43,7 @@ export const checkInventory = async (req: Request, res: Response) => {
         const inventory = await Inventory.findOne({ where: { user_id: userId }, include: [{ model: Temtem, through: { attributes: [] }}]});
 
         if(!inventory) {
-            return APIResponse(res, [], 'Inventory not found', 400);
+            return APIResponse(res, [], 'Inventory not found', 404);
         }
         return APIResponse(res, inventory, 'Inventory checked successfully', 200);
     } catch (error) {
@@ -75,7 +75,7 @@ export const deleteTemtemFromInventory = async (req: Request, res: Response) => 
         const inventory = await Inventory.findOne({ where: { user_id: userId }});
 
         if (!inventory) {
-            return APIResponse(res, [], 'Inventory not found');
+            return APIResponse(res, [], 'Inventory not found', 404);
         }
 
         await InventoryTemtem.destroy({ where: { inventory_id: inventory.id, temtem_id: temtemId }});
